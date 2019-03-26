@@ -6,5 +6,5 @@ Group project to make a model that predicts the sale price of single family home
 
 git clone https://github.com/jacluff1/Pima_Chads.git <br />
 cd Pima_Chads <br />
-git checkout -b <branch-name> <br />
+git checkout -b "insert branch-name" <br />
 
