@@ -1,2 +1,8 @@
 # ignore folders
-raw_data
+data
+data_sets
+__pycache__
+.ipynb_checkpoints
+
+# ignore file types
+**.csv
