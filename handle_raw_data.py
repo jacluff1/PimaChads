@@ -26,7 +26,7 @@ def trim_data():
     for col in data: data[col].astype(int, errors='ignore')
 
     # select useful columns
-    data = data[['PARCEL', 'ZIP', 'LANDFCV']]
+    data = data[['PARCEL', 'LANDFCV']] #ZIP
     data = data.rename(str.lower, axis='columns')
 
     # save
@@ -92,13 +92,15 @@ def clean_and_transform():
     # drop columns
     data.drop(columns=['landfcv', 'age'], inplace=True)
 
-    # one-hot data
-    one_hot_columns = ['zip']
-    for col in one_hot_columns:
-        uniques = data[col].unique()
-        for u in uniques:
-            data[f"{col}_{u}"] = (data[col] == u).astype(np.int32)
-    data.drop(columns=one_hot_columns, inplace=True)
+    # # one-hot data
+    # one_hot_columns = ['zip']
+    # for col in one_hot_columns:
+    #     uniques = data[col].unique()
+    #     for u in uniques:
+    #         data[f"{col}_{u}"] = (data[col] == u).astype(np.int32)
+    # data.drop(columns=one_hot_columns, inplace=True)
+
+    # drop parcel
     data.drop(columns=['parcel'], inplace=True)
 
     # shuffle the entire set of observations
