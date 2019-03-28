@@ -100,11 +100,12 @@ def clean_and_transform():
     #         data[f"{col}_{u}"] = (data[col] == u).astype(np.int32)
     # data.drop(columns=one_hot_columns, inplace=True)
 
-    # drop parcel
-    data.drop(columns=['parcel'], inplace=True)
+    # drop columns
+    drop_columns=['parcel', 'heat_2.0', 'validationdescription_buyer/seller is a non-profit institution', 'validationdescription_payoff of land contract']
+    data.drop(columns=drop_columns, inplace=True)
 
     # shuffle the entire set of observations
-    data = data.sample(frac=1).reset_index(drop=True)
+    data = data.sample(frac=1, random_state=0).reset_index(drop=True)
 
     # get the numbers of observations for the data sets
     N = data.shape[0]
