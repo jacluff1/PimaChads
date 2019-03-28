@@ -90,7 +90,7 @@ def clean_and_transform():
     data = pd.read_csv("data/dirty.csv", low_memory=False)
 
     # drop columns
-    data.drop(columns=['landfcv', 'age'])
+    data.drop(columns=['landfcv', 'age'], inplace=True)
 
     # one-hot data
     one_hot_columns = ['zip']
@@ -98,7 +98,8 @@ def clean_and_transform():
         uniques = data[col].unique()
         for u in uniques:
             data[f"{col}_{u}"] = (data[col] == u).astype(np.int32)
-    data.drop(columns=one_hot_columns)
+    data.drop(columns=one_hot_columns, inplace=True)
+    data.drop(columns=['parcel'], inplace=True)
 
     # shuffle the entire set of observations
     data = data.sample(frac=1).reset_index(drop=True)
@@ -115,6 +116,6 @@ def clean_and_transform():
     test = data[ N_train+N_validate: ]
 
     # save the dataframes
-    train.to_csv("train.csv", index=False)
-    validate.to_csv("validate.csv", index=False)
-    test.to_csv("test.csv", index=False)
+    train.to_csv("data_sets/train.csv", index=False)
+    validate.to_csv("data_sets/validate.csv", index=False)
+    test.to_csv("data_sets/test.csv", index=False)
