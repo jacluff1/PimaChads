@@ -11,7 +11,7 @@ def trim_data():
     data = pd.read_csv('data/raw_data/EDNPI19.csv', low_memory=False)
 
     # select useful columns
-    data = data[['PARCEL', 'LAT', 'LON', 'LANDSQFT']]
+    data = data[['PARCEL', 'LAT', 'LON', 'Z', 'LANDSQFT']]
     data = data.rename(str.lower, axis='columns')
 
     # save
@@ -101,8 +101,12 @@ def clean_and_transform():
     # data.drop(columns=one_hot_columns, inplace=True)
 
     # drop columns
-    drop_columns=['parcel', 'heat_2.0', 'validationdescription_buyer/seller is a non-profit institution', 'validationdescription_payoff of land contract']
+    drop_columns=['heat_2.0', 'validationdescription_buyer/seller is a non-profit institution', 'validationdescription_payoff of land contract']
     data.drop(columns=drop_columns, inplace=True)
+
+    # # extract the Y column
+    # Y = data.parcel.values
+    # data.drop(columns=['parcel'], inplace=True)
 
     # shuffle the entire set of observations
     data = data.sample(frac=1, random_state=0).reset_index(drop=True)
@@ -113,7 +117,7 @@ def clean_and_transform():
     N_validate = int(.2*N)
     N_test = N - N_validate - N_train
 
-    # get the cross validation sets
+    # get the cross validation data
     train = data[ :N_train ]
     validate = data[N_train : N_train+N_validate ]
     test = data[ N_train+N_validate: ]
@@ -122,3 +126,9 @@ def clean_and_transform():
     train.to_csv("data_sets/train.csv", index=False)
     validate.to_csv("data_sets/validate.csv", index=False)
     test.to_csv("data_sets/test.csv", index=False)
+
+def run():
+
+    trim_data()
+    join_trimmed_data()
+    clean_and_transform()
