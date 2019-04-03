@@ -3,25 +3,43 @@ import pandas as pd
 from sklearn.neighbors import KNeighborsRegressor
 
 
+
+def normalize(df, on=None, ignore=(), offset=1e-5):
+    on = on if on is not None else df
+    for col in set(df.columns) - set(ignore):
+        df[col] -= df[col].min()
+        df[col] /= df[col].max() - df[col].min() + offset
+    return df
+
+
 if __name__ == "__main__":
+    target = "saleprice"
+
     df = {}
     X = {}
     Y = {}
 
-    df["train"] = pd.read_csv("train.csv")
-    df["validate"] = pd.read_csv("validate.csv")
-    df["test"] = pd.read_csv("test.csv")
+    df["train"] = pd.read_csv("../data_sets/train.csv")
+    df["validate"] = pd.read_csv("../data_sets/validate.csv")
+    df["test"] = pd.read_csv("../data_sets/test.csv")
 
-    target = "SALEPRICE"
+    df["train"] = normalize(df["train"], ignore=target)
+    df["validate"] = normalize(df["validate"], df["train"], ignore=target)
+    df["test"] = normalize(df["test"], df["train"], ignore=target)
 
     for data in df:
         X[data] = np.array(df[data].drop(columns=target))
         Y[data] = np.array(df[data][target])
 
+
     # Grid search on kNN Regression hyperparameters.
 
     r2_best = 0
-    for n in range(20):
+    n_best = None
+    norm_best = None
+    weights_best = None
+
+    for n in range(2, 20):
         for norm in [1, 2]:
             for weights in ['uniform', 'distance']:
                 model = KNeighborsRegressor(n_neighbors=n, p=norm, weights=weights)
