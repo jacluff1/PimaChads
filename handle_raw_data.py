@@ -246,7 +246,7 @@ def split_into_sets():
     print("\nsplitting data into 'train', 'validate', and 'test' sets...")
 
     # load cleaned data
-    data = pd.read_csv("data/clean.csv")
+    data = pd.read_csv("data_sets/clean.csv")
 
     # drop parcel
     data.drop(columns=['parcel'], inplace=True)
@@ -274,6 +274,6 @@ def run():
 
     # trim_data()
     # join_trimmed_data()
-    clean_and_transform()
+    # clean_and_transform()
     split_into_sets()
     # cp.check_categories("data_sets/clean.csv")
