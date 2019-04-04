@@ -1,0 +1,46 @@
+Filter:
+1.8809: ValidationDescription_Buyer/Seller are related parties or corporate entities
+0.0044: ValidationDescription_Buyer/Seller is a Non-Profit institution
+0.5114: ValidationDescription_More than five (5) parcels being sold
+0.0022: ValidationDescription_Sale includes quantifiable Personal Property > 5%
+0.0132: ValidationDescription_Sale includes unquantifiable Personal Property > 5%
+0.0132: ValidationDescription_Sale involves exchange or trade
+0.2305: ValidationDescription_Sale price missing
+0.0044: ValidationDescription_Sale pursuant to a court order
+1.3278: ValidationDescription_Sale to or from a government agency
+8.0548: ValidationDescription_Sale under duress
+0.4653: ValidationDescription_Suspicious Sale
+0.0066: ValidationDescription_Unsecured Mobile Home
+0.1514: ValidationDescription_Unusable sale which does not fit any other reject codes
+0.0022: ValidationDescription_Trust sale of nominal consideration or convenience
+0.0022: ValidationDescription_Sale of convenience for nominal consideration
+
+Delete:
+29.6864: ValidationDescription_Buyer/Seller has an Out-Of-State Address
+0.0154: ValidationDescription_Correction of previously recorded deed
+56.2145: ValidationDescription_Good Sale
+0.0022: ValidationDescription_Internet sale
+0.0110: ValidationDescription_Improvements not yet on assessment roll
+0.0088: ValidationDescription_Name/Address of Buyer or Seller is missing
+0.0044: ValidationDescription_Payoff of Land contract
+0.3073: ValidationDescription_Property altered since date of sale
+0.0263: ValidationDescription_Property type/use code are not consistent
+0.1032: ValidationDescription_Sale of partial interest
+0.0154: ValidationDescription_Split legislative class/assessment ratio
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
