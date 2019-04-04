@@ -1,5 +1,10 @@
+# import external dependencies
 import pandas as pd
 import numpy as np
+import pdb
+# import internal modules
+import Append_Owner_Address_Classifiers as aoac
+import CategoryPercentage as cp
 
 def one_hot_data(data):
     # one-hot data
@@ -11,30 +16,9 @@ def one_hot_data(data):
     data.drop(columns=one_hot_columns, inplace=True)
     return data
 
-def check_categories(filename):
-
-    # load data
-    df = pd.read_csv(filename)
-
-    # Number of observations.
-    N,D = df.shape
-
-    fractions = []
-
-    for col in df.columns:
-        # Get categorical columns.
-        if set(df[col]) <= {0, 1}:
-            # (column name, amount true)
-            S = df[col].sum()
-            fractions.append( (col, S/N, S) )
-
-    fractions.sort(key=lambda x: x[1])
-
-    print("\nCategorical Data\nPercentage : N_observations : Category")
-    for i in fractions:
-        print("{:0.4f} : {} : {}".format(i[1]*100,i[2],i[0]))
-
 def trim_data():
+
+    print("\ntrimming data...")
 
     #===========================================================================
     # eco district
@@ -79,7 +63,28 @@ def trim_data():
     # save
     data.to_csv('data/trimmed/parcel.csv', index=False)
 
+    #===========================================================================
+    # rental
+    #===========================================================================
+
+    # load data
+    data = pd.read_csv('data/raw_data/Rental.csv')
+
+    # list to drop
+    drop_cols = ['TaxPayer', 'YearBuilt', 'AgentName"AgentContact', 'AgentCity', 'AgentState','AgentZip', 'AgentZip4']
+
+    # drop columns
+    data.drop(columns=drop_cols, inplace=True)
+
+    # rename
+    data = data.rename(str.lower, axis='columns')
+
+    # save
+    data.to_csv("data/trimmed/rental.csv", index=False)
+
 def join_trimmed_data():
+
+    print("\njoining data")
 
     #===========================================================================
     # set up main data
@@ -126,10 +131,7 @@ def join_trimmed_data():
     print("\nmerging Rental")
 
     # load rental data
-    rental = pd.read_csv("data/trimmed/Rental.csv")
-
-    # rename columns
-    rental = rental.rename(str.lower, axis='columns')
+    rental = pd.read_csv("data/trimmed/rental.csv")
 
     # left join
     JOIN = JOIN.merge(rental, how='left', on='parcel')
@@ -142,8 +144,10 @@ def join_trimmed_data():
 
 def clean_and_transform():
 
+    print("\ncleaning and transforming data...")
+
     # load data
-    data = pd.read_csv("data/dirty.csv", low_memory=False)
+    data = pd.read_csv("data/dirty.csv")
 
     #===========================================================================
     # filter
@@ -166,7 +170,11 @@ def clean_and_transform():
         "ValidationDescription_Unusable sale which does not fit any other reject codes",
         "ValidationDescription_Trust sale of nominal consideration or convenience",
         "ValidationDescription_Sale of convenience for nominal consideration",
-        "personalproperty_yes"
+        "personalproperty_yes",
+        "deed_quit claim deed",
+        "buyersellerrelated_yes",
+        "partialinterest_yes",
+        "financing_cash"
         ]
 
     # put columns into lower case
@@ -193,8 +201,19 @@ def clean_and_transform():
         "ValidationDescription_Property type/use code are not consistent",
         "ValidationDescription_Sale of partial interest",
         "ValidationDescription_Split legislative class/assessment ratio",
-        "validationdescription_correction of previously recorded deed",
-        "personalproperty_no"
+        'validationdescription_correction of previously recorded deed                 ',
+        "personalproperty_no",
+        "heat_2.0",
+        "deed_contract or agreement",
+        "roof_5.0",
+        "heat_3.0",
+        "cool_9.0",
+        "heat_9.0",
+        "heat_4.0",
+        "heat_0.0",
+        "partialinterest_no",
+        "buyersellerrelated_no",
+        "financing_other"
         ]
 
     # put column names into lower case
@@ -202,16 +221,23 @@ def clean_and_transform():
 
     # drop the columns
     data.drop(columns=drop_cols+filter_cols, inplace=True)
+    # data = data.drop(columns=drop_cols+filter_cols)
 
     #===========================================================================
     # cleaning
     #===========================================================================
 
     #===========================================================================
+    # transform
+    #===========================================================================
+
+    aoac.fix_rental(data)
+
+    #===========================================================================
     # save
     #===========================================================================
 
-    data.to_csv("data/clean.csv", index=False)
+    data.to_csv("data_sets/clean.csv", index=False)
 
 def split_into_sets():
 
@@ -219,6 +245,9 @@ def split_into_sets():
 
     # load cleaned data
     data = pd.read_csv("data/clean.csv")
+
+    # drop parcel
+    data.drop(columns=['parcel'], inplace=True)
 
     # shuffle the entire set of observations
     data = data.sample(frac=1, random_state=0).reset_index(drop=True)
@@ -245,3 +274,4 @@ def run():
     # join_trimmed_data()
     clean_and_transform()
     split_into_sets()
+    cp.check_categories("data_sets/clean.csv")
