@@ -56,6 +56,13 @@ Ignoring columns that are not represented -- don't want to stratify data --
 99.9449 : 39928 : buyersellerrelated_no
 
 ================================================================================
+Ignoring columns that are almost entirely populated with nan
+================================================================================
+column  : fraction
+landfcv : 0.9988
+age     : 1.0000
+
+================================================================================
 Maybe Ignore:
 ================================================================================
 0.1552 : 62 : intendeduse_unknown

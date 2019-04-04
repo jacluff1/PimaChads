@@ -213,7 +213,9 @@ def clean_and_transform():
         "heat_0.0",
         "partialinterest_no",
         "buyersellerrelated_no",
-        "financing_other"
+        "financing_other",
+        "landfcv",
+        "age"
         ]
 
     # put column names into lower case
@@ -274,4 +276,4 @@ def run():
     # join_trimmed_data()
     clean_and_transform()
     split_into_sets()
-    cp.check_categories("data_sets/clean.csv")
+    # cp.check_categories("data_sets/clean.csv")
