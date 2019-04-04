@@ -26,16 +26,16 @@ dist=[closest_from(data.lat[i],data.lon[i],1609,'hospital') for i in range(len(d
 
 dist=pd.DataFrame(dist)
 
-data['mindistHospt']=dist #the data is appended to the data frame
+data['mindistHosp']=dist['0']/1609 #the data is appended to the data frame
 
-ddist=dist//(1609*5) #to get distances in less than 5miles, in 5-10miles etc
+# ddist=dist//(1609*5) #to get distances in less than 5miles, in 5-10miles etc
+#
+# ddist=pd.get_dummies(ddist, columns=['0']) #one hot encoding the new data
+#
+# ddist.columns=['Hosp_dist<5m','Hosp_dist5<10m', 'Hosp_dist10<15m','Hosp_dist15<20m','Hosp_dist>20m'] #renaming the data columns
+#
+# data=pd.concat([data,ddist], axis=1) #to append the data frame ddist to the left of data but two new columns are added that we need to remove
+#
+# data=data.drop(['Unnamed: 0','Unnamed: 0.1'], axis=1)
 
-ddist=pd.get_dummies(ddist, columns=['0']) #one hot encoding the new data
-
-ddist.columns=['Hosp_dist<5m','Hosp_dist5<10m', 'Hosp_dist10<15m','Hosp_dist15<20m','Hosp_dist>20m'] #renaming the data columns
-
-data=pd.concat([data,ddist], axis=1) #to append the data frame ddist to the left of data but two new columns are added that we need to remove
-
-data=data.drop(['Unnamed: 0','Unnamed: 0.1'], axis=1)
-
-data.to_csv('Main Datasheet with Owner Location Data.csv') #save the data
+data.to_csv('Main Datasheet.csv') #save the data
