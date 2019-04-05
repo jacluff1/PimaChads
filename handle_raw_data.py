@@ -82,6 +82,22 @@ def trim_data():
     # save
     data.to_csv("data/trimmed/rental.csv", index=False)
 
+    #===========================================================================
+    # geographic
+    #===========================================================================
+
+    # load data
+    data = pd.read_csv("data/raw_data/geographic.csv", index_col="Unnamed: 0")
+
+    # only seclect desired columns
+    data = data[['parcel', 'MinDistHosp/Miles']]
+
+    # rename columns to lower case
+    data = data.rename(str.lower, axis='columns')
+
+    # save
+    data.to_csv("data/trimmed/geographic.csv", index=False)
+
 def join_trimmed_data():
 
     print("\njoining data")
@@ -96,7 +112,7 @@ def join_trimmed_data():
     JOIN = JOIN.rename(str.lower, axis='columns')
 
     #===========================================================================
-    # inner join: 'eco', 'notice', and 'parcel'
+    # inner join: 'eco', 'notice', 'parcel', and 'geographic'
     #===========================================================================
 
     # make a function to join to JOIN with filename as input
@@ -123,6 +139,7 @@ def join_trimmed_data():
     JOIN = join_it(JOIN,'eco')
     JOIN = join_it(JOIN,'notice')
     JOIN = join_it(JOIN,'parcel')
+    JOIN = join_it(JOIN,'geographic')
 
     #===========================================================================
     # left join: 'Rental'
@@ -272,8 +289,8 @@ def split_into_sets():
 
 def run():
 
-    # trim_data()
-    # join_trimmed_data()
-    # clean_and_transform()
+    trim_data()
+    join_trimmed_data()
+    clean_and_transform()
     split_into_sets()
     # cp.check_categories("data_sets/clean.csv")
