@@ -201,6 +201,8 @@ def clean_and_transform():
     for col in filter_cols:
         data = data[data[col] == 0]
 
+    data = data[data.rooms != 99]
+
     #===========================================================================
     # drop
     #===========================================================================
@@ -289,8 +291,8 @@ def split_into_sets():
 
 def run():
 
-    trim_data()
-    join_trimmed_data()
+    # trim_data()
+    # join_trimmed_data()
     clean_and_transform()
     split_into_sets()
     # cp.check_categories("data_sets/clean.csv")
