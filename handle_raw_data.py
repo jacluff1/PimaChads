@@ -210,6 +210,10 @@ def clean_and_transform():
     # filter out observations where longitude < -112
     data = data[data.lon > -112]
 
+    # filter out parcels that have outstanding permits
+    permits = pd.read_csv("data/permits.csv")
+    data = data[~data.parcel.isin(permits.parcel)]
+
     #===========================================================================
     # drop
     #===========================================================================
@@ -249,7 +253,6 @@ def clean_and_transform():
 
     # drop the columns
     data.drop(columns=drop_cols+filter_cols, inplace=True)
-    # data = data.drop(columns=drop_cols+filter_cols)
 
     #===========================================================================
     # cleaning
