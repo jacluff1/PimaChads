@@ -1,0 +1,89 @@
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+%matplotlib inline
+
+data=pd.read_csv("clean.csv")
+data350k=data.loc[data["saleprice"]>=350000]
+
+#has pool area or no pool area
+poolarea=pd.DataFrame(['no_poolarea','poolarea'])
+poolarea['freq']=[len(data350k.loc[data350k["poolarea"]<=0]),len(data350k.loc[data350k["poolarea"]>0])]
+poolarea["%freq"]=poolarea.freq*100/poolarea.freq.sum()
+
+#wall type
+walls=['walls_0.0', 'walls_1.0', 'walls_2.0',
+       'walls_3.0', 'walls_4.0', 'walls_5.0', 'walls_6.0', 'walls_7.0',
+       'walls_8.0']
+wall=[data350k[walls[i]].sum() for i in range(len(walls))]
+walls=pd.DataFrame(walls)
+walls['freq']=wall
+plt.figure(figsize=(8,6))
+plt.bar(walls.iloc[:,0],walls.iloc[:,1])
+plt.title('Wall types')
+plt.xlabel('categories')
+plt.ylabel('Frequency')
+walls['%freq']=walls.iloc[:,1]*100/walls.iloc[:,1].sum()
+
+#classes
+classes=['class_1.0', 'class_2.0', 'class_3.0', 'class_4.0',
+       'class_5.0', 'class_6.0']
+class1=[data350k[classes[i]].sum() for i in range(len(classes))]
+classes=pd.DataFrame(classes)
+classes['freq']=class1
+plt.figure(figsize=(8,6))
+plt.bar(classes.iloc[:,0],classes.iloc[:,1])
+plt.title('Class types')
+plt.xlabel('categories')
+plt.ylabel('Frequency')
+classes['%freq']=classes.iloc[:,1]*100/classes.iloc[:,1].sum()
+
+#roof type
+roofs=['roof_0.0', 'roof_1.0', 'roof_2.0', 'roof_3.0', 'roof_4.0',
+       'roof_6.0', 'roof_7.0', 'roof_8.0']
+roof=[data350k[roofs[i]].sum() for i in range(len(roofs))]
+roofs=pd.DataFrame(roofs)
+roofs['freq']=roof
+plt.figure(figsize=(8,6))
+plt.bar(roofs.iloc[:,0],roofs.iloc[:,1])
+plt.title('Roof types')
+plt.xlabel('categories')
+plt.ylabel('Frequency')
+roofs['%freq']=roofs.iloc[:,1]*100/roofs.iloc[:,1].sum()
+
+#heat type
+heat=['heat_1.0', 'heat_5.0', 'heat_6.0',
+       'heat_7.0', 'heat_8.0']
+heat1=[data350k[heat[i]].sum() for i in range(len(heat))]
+heat=pd.DataFrame(heat)
+heat['freq']=heat1
+plt.figure(figsize=(8,6))
+plt.bar(heat.iloc[:,0],heat.iloc[:,1])
+plt.title('Heat types')
+plt.xlabel('categories')
+plt.ylabel('Frequency')
+heat['%freq']=heat.iloc[:,1]*100/heat.iloc[:,1].sum()
+
+#cooling type
+cool=['cool_0.0', 'cool_1.0', 'cool_2.0']
+cool1=[data350k[cool[i]].sum() for i in range(len(cool))]
+cool=pd.DataFrame(cool)
+cool['freq']=cool1
+cool['%freq']=cool.iloc[:,1]*100/cool.iloc[:,1].sum()
+plt.figure()
+plt.bar(cool.iloc[:,0],cool.iloc[:,1])
+plt.title('Cooling types')
+plt.xlabel('categories')
+plt.ylabel('Frequency')
+
+#Garage type
+garage=['garage_1.0', 'garage_3.0', 'garage_6.0', 'garage_9.0']
+gar=[data350k[garage[i]].sum() for i in range(len(garage))]
+garage=pd.DataFrame(garage)
+garage['freq']=gar
+garage['%freq']=garage.iloc[:,1]*100/garage.iloc[:,1].sum()
+plt.figure()
+plt.bar(garage.iloc[:,0],garage.iloc[:,1])
+plt.title('Garage types')
+plt.xlabel('categories')
+plt.ylabel('Frequency')
