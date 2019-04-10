@@ -2,6 +2,9 @@
 import pandas as pd
 import numpy as np
 import pdb
+import matplotlib
+matplotlib.use('agg')
+import matplotlib.pyplot as plt
 # import internal modules
 import Append_Owner_Address_Classifiers as aoac
 import CategoryPercentage as cp
@@ -28,7 +31,7 @@ def trim_data():
     data = pd.read_csv('data/raw_data/EDNPI19.csv', low_memory=False)
 
     # select useful columns
-    data = data[['PARCEL', 'LAT', 'LON', 'Z', 'LANDSQFT']]
+    data = data[['PARCEL', 'LAT', 'LON', 'Z', 'LANDSQFT', 'NLRNBHD']]
     data = data.rename(str.lower, axis='columns')
 
     # save
@@ -201,7 +204,11 @@ def clean_and_transform():
     for col in filter_cols:
         data = data[data[col] == 0]
 
+    # filter data where rooms == 99
     data = data[data.rooms != 99]
+
+    # filter out observations where longitude < -112
+    data = data[data.lon > -112]
 
     #===========================================================================
     # drop
@@ -260,7 +267,7 @@ def clean_and_transform():
 
     data.to_csv("data_sets/clean.csv", index=False)
 
-def split_into_sets():
+def split_into_sets(column):
 
     print("\nsplitting data into 'train', 'validate', and 'test' sets...")
 
@@ -270,19 +277,41 @@ def split_into_sets():
     # drop parcel
     data.drop(columns=['parcel'], inplace=True)
 
+    # get an array of the unique values in the DataFrame column
+    uniques = data[column].unique()
+
+    # loop through each unique value in the column
+    for val in uniques:
+        data[f"{column}_{val}"] = (data[column] == val).to_numpy(dtype=np.int32)
+
+    # delete the original column
+    data.drop(column, axis=1, inplace=True)
+
     # shuffle the entire set of observations
     data = data.sample(frac=1, random_state=0).reset_index(drop=True)
 
-    # get the numbers of observations for the data sets
-    N = data.shape[0]
-    N_train = int(.6*N)
-    N_validate = int(.2*N)
-    N_test = N - N_validate - N_train
+    # create impty DataFrames for the data sets
+    train = pd.DataFrame()
+    validate = pd.DataFrame()
+    test = pd.DataFrame()
 
-    # get the cross validation data
-    train = data[ :N_train ]
-    validate = data[N_train : N_train+N_validate ]
-    test = data[ N_train+N_validate: ]
+    # stratify the data
+    for val in uniques:
+
+        # get the data subset
+        df = data[data[f"{column}_{val}"] == 1]
+        # find the length of the subset
+        N = df.shape[0]
+
+        # get the number of observations to go into each data set
+        N_train = int(.6*N)
+        N_validate = int(.2*N)
+        N_test = N - N_validate - N_train
+
+        # append the sub data sets to the data sets
+        train = train.append(df[ :N_train ], ignore_index=True)
+        validate = validate.append(df[N_train : N_train+N_validate ], ignore_index=True)
+        test = test.append(df[ N_train+N_validate: ], ignore_index=True)
 
     # save the dataframes
     train.to_csv("data_sets/train.csv", index=False)
@@ -294,5 +323,32 @@ def run():
     # trim_data()
     # join_trimmed_data()
     clean_and_transform()
-    split_into_sets()
+    split_into_sets('nlrnbhd')
     # cp.check_categories("data_sets/clean.csv")
+
+#===============================================================================
+# figures
+#===============================================================================
+
+def plot_lon_lat():
+    dirty = pd.read_csv("data/dirty.csv")
+    clean = pd.read_csv("data_sets/clean.csv")
+
+    # is in both data
+    both = dirty[dirty.parcel.isin(clean.parcel)]
+    # was dropped
+    dropped = dirty[~dirty.parcel.isin(clean.parcel)]
+
+    fig,ax = plt.subplots()
+    fig.suptitle("Looking at Houses that were Dropped")
+    ax.scatter(both.lon.values, both.lat.values, c='g', alpha=.1, label='both')
+    ax.scatter(dropped.lon.values, dropped.lat.values, c='r', alpha=.1, label='dropped')
+    ax.set_xlabel("longitude")
+    ax.set_ylabel("latitude")
+    ax.set_aspect(1)
+    plt.legend()
+
+    fig.savefig("lon_lat.pdf")
+    plt.close(fig)
+
+    pass

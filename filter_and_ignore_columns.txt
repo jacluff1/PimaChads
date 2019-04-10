@@ -26,6 +26,10 @@ Filter columns that don't accurately represent fair market price or a typical sa
 0.1101 : 44 : partialinterest_yes
 20.1952 : 8068 : financing_cash
 
+observations w/ longitude < -112: it seems they are on an Indian Reservation and represent a small subset of the data
+
+observations w/ rooms == 99: an outdated metric that does not actually reflect the number of rooms
+
 ================================================================================
 Ignoring columns that are not not important predictive features:
 ================================================================================
