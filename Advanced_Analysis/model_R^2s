@@ -1,0 +1,4 @@
+model, R^2
+random forest, 0.893
+FFNN, 0.881
+kNN with L1-Regularization, 0.824
