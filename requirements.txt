@@ -1,5 +1,9 @@
+forestci
 keras
 matplotlib
 numpy
 pandas
+pyswarms
 sklearn
+tensorflow
+treeinterpreter
