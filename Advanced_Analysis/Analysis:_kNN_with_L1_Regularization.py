@@ -65,11 +65,19 @@ if __name__ == "__main__":
     for data in df:
         X[data + "_L1"] = X[data][:,indices]
 
+        # Weighted metric.
+        X[data + "_L1"][:,[10]] *= 3
+        X[data + "_L1"][:,[4]] *= 3
+        X[data + "_L1"][:,[12]] *= 3
+        # R^2=0.8023933496394154
+
+
     # kNN Regression over reduced matrices.
     m_knn = KNeighborsRegressor(n_neighbors=k, p=norm, weights=weights)
     m_knn.fit(X["train_L1"], Y["train"])
     r2 = m_knn.score(X["validate_L1"], Y["validate"])
     print(f"kNN R^2={r2}, lambda1={lambda1}, count={count}, k={k}, norm={norm}, weights={weights}")
+
 
 
 
