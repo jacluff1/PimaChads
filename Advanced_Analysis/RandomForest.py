@@ -194,7 +194,8 @@ if __name__ == "__main__":
     cutoff = .5
     #norm_adj = df_geographic[target].apply(lambda x: min(x, cutoff))
     plt.figure()
-    cbar.ax.set_yticklabels(np.arange(int(cbar_min), int(cbar_max + cbar_step), int(cbar_step)))
+    #TODO
+    #cbar.ax.set_yticklabels(np.arange(int(cbar_min), int(cbar_max + cbar_step), int(cbar_step)))
     plt.scatter(df_geographic["lon"], df_geographic["lat"], c=df_geographic[target], s=.5, cmap=cmap, alpha=.5)
     plt.colorbar()
     plt.axis('off')
