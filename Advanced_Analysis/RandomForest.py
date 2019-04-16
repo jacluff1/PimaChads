@@ -168,15 +168,16 @@ if __name__ == "__main__":
     df_geographic["lon"] = df_hat["lon"]
     df_geographic["abs_percent_residual"] = abs(df_hat["predicted"] - df_hat[target]) / df_hat[target]
     # Residual color scheme
-    cmap = cm.get_cmap("Reds")
+    cmap = cm.get_cmap("Wistia")
     norm = (df_geographic["abs_percent_residual"] - df_geographic["abs_percent_residual"].min()) /\
            (df_geographic["abs_percent_residual"].max() - df_geographic["abs_percent_residual"].min())
     cutoff = .5
     norm_adj = df_geographic["abs_percent_residual"].apply(lambda x: min(x, cutoff))
     plt.figure()
-    plt.scatter(df_geographic["lon"], df_geographic["lat"], c=norm_adj, s=.5, cmap=cmap, alpha=.5)
+    plt.scatter(df_geographic["lon"], df_geographic["lat"], c=norm_adj, s=1, cmap=cmap, alpha=.5)
     plt.colorbar()
     plt.axis('off')
+    plt.figaspect(1)
     plt.title(f"{modelname} Absolute Percent Error (Capped at 50%)")
     plt.tight_layout()
     plt.savefig(f"figures/{modelname}_Abs_Geo_Residuals.png", dpi=dpi)
@@ -188,17 +189,19 @@ if __name__ == "__main__":
     df_geographic["lon"] = df_hat["lon"]
     df_geographic[target] = df_hat[target]
     # Residual color scheme
-    cmap = cm.get_cmap("Reds")
+    cmap = cm.get_cmap("Wistia")
     norm = (df_geographic[target] - df_geographic[target].min()) / \
            (df_geographic[target].max() - df_geographic[target].min())
-    cutoff = .5
+    cutoff = 1e6
+    adj = df_geographic[target].apply(lambda x: min(x, cutoff))
     #norm_adj = df_geographic[target].apply(lambda x: min(x, cutoff))
     plt.figure()
     #TODO
     #cbar.ax.set_yticklabels(np.arange(int(cbar_min), int(cbar_max + cbar_step), int(cbar_step)))
-    plt.scatter(df_geographic["lon"], df_geographic["lat"], c=df_geographic[target], s=.5, cmap=cmap, alpha=.5)
+    plt.scatter(df_geographic["lon"], df_geographic["lat"], c=adj, s=1, cmap=cmap, alpha=.5)
     plt.colorbar()
     plt.axis('off')
+    plt.figaspect(1)
     plt.title(f"Actual Price")
     plt.tight_layout()
     plt.savefig(f"figures/Actual_Geo.png", dpi=dpi)
